@@ -8,9 +8,6 @@ var speed = 0.2
 var time = 0
 var shake_time = 0
 
-func _ready():
-	p.connect("move",self,"player_move")
-
 func _process(delta):
 	if shake_time > 0:
 		$player/Camera2D.offset = Vector2(rand_range(2,10),rand_range(2,10))
@@ -31,9 +28,6 @@ func _process(delta):
 		Color(dam_c.r,dam_c.g,dam_c.v,0.7),Color(dam_c.r,dam_c.g,dam_c.v,0.3),speed,Tween.TRANS_LINEAR,Tween.EASE_IN_OUT)
 		$damier/color_alpha.start()
 
-func player_move():
-	if time >= 0.25 or time < 0.1:
-		print("get it")
-	else:
-		$player.miss_bpm()
-		shake_time = 0.15
+func can_walk():
+	if time >= 0.3 or time <= 0.1:
+		return true

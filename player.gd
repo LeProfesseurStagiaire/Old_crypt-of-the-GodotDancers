@@ -1,17 +1,14 @@
 extends Node2D
 
-var dir_h = 0
-var dir_v = 0
 onready var can_walk = true
-onready var speed = get_tree().get_current_scene().speed
+onready var main = get_tree().get_current_scene()
+onready var speed = main.speed
 onready var s = $s
 onready var distance = 64
 var dir = Vector2()
 
-signal move
-
 func _ready():
-	position = Vector2(32,(position.y - (s.texture.get_size().y/2) + 32))
+	position = Vector2(32,(position.y - (s.texture.get_size().y/2) + 45))
 	$s_shadow.position.y = s.texture.get_size().y/2
 
 func _process(delta):
@@ -37,15 +34,19 @@ func _process(delta):
 			$s_color.start()
 			$jump.play("jump")
 			$move.start(speed)
-			emit_signal("move")
+			if !main.can_walk():
+				stop()
 
-func miss_bpm():
-	$move.stop()
+func stop():
+	main.shake_time = 0.15
 	can_walk = false
-	$move.start(speed*3)
+	$move.stop()
+	$move.start(speed*4)
 	$s_color.interpolate_property(s,"modulate",s.modulate,Color(1,0,0),speed*3,Tween.TRANS_LINEAR,Tween.EASE_IN_OUT)
+	$s_color.start()
 
 func _on_Timer_timeout():
 	if can_walk == false:
 		can_walk = true
 		$s_color.interpolate_property(s,"modulate",s.modulate,Color(rand_range(0.4,0.6),rand_range(0.5,1),rand_range(0.5,1)),speed*3,Tween.TRANS_LINEAR,Tween.EASE_IN_OUT)
+		$s_color.start()
