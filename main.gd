@@ -5,6 +5,11 @@ var damier_pos = 0
 var dam_c = Color(1, 0.84845, 0.253906, 0.494118)
 var speed = 0.2
 
+# Délai entre chaque temps en millisecondes = 60*1000 / bpm (donc : 60000 / 120) = 500 ms 
+# on multiplie en suite par 0.001 pour passer en millisecondes
+export(int) var music_bpm = 130
+onready var bpm = (60000/music_bpm)*0.001
+
 var time = 0
 var shake_time = 0
 
@@ -15,7 +20,7 @@ func _process(delta):
 	else:
 		$player/Camera2D.offset = Vector2(0,0)
 	time += 1*delta
-	if time >= 0.4615:
+	if time >= bpm:
 		time = 0
 		if damier_pos == 0:
 			damier_pos = 64
@@ -29,5 +34,5 @@ func _process(delta):
 		$damier/color_alpha.start()
 
 func can_walk():
-	if time >= 0.3 or time <= 0.1:
+	if time >= bpm/1.5 or time <= bpm*0.2:
 		return true
